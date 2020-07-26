@@ -1,0 +1,3 @@
+[submodule "DHT11_Python"]
+	path = DHT11_Python
+	url = https://github.com/szazo/DHT11_Python

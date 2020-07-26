@@ -1,10 +1,12 @@
+# coding: UTF-8
 import RPi.GPIO as GPIO
 import time
 import datetime
 import requests
-import environment
 import os
 import sys
+sys.path.append("../")
+import environment
 sys.path.append("../DHT11_Python")
 import dht11
 
@@ -14,9 +16,6 @@ environment.writeSlackIncomingUrl()
 # initialize GPIO
 GPIO.setwarnings(True)
 GPIO.setmode(GPIO.BCM)
-
-print(os.environ["LANG"])
-print(os.environ["SLACK_INCOMING_URL"])
 
 # read data using pin 14
 instance = dht11.DHT11(pin=14)
