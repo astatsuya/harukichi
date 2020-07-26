@@ -5,7 +5,7 @@ import datetime
 import requests
 import os
 import sys
-sys.path.append("../")
+sys.path.append("..")
 import environment
 sys.path.append("../DHT11_Python")
 import dht11
@@ -42,7 +42,7 @@ try:
             
             payload = 0
             print(count)
-            if count >= 2:                        
+            if count >= 30:                        
                 # 定時投稿
                 payload = {"text": "<@{0}> 30分に一度の定時投稿。現在のはるきちのおうち\n\n{1}".format(userId, tempAndHumidMessage)}
                 response = requests.post(url, json=payload)
@@ -66,7 +66,7 @@ try:
                     response = requests.post(url, json=payload)
                     print(response.status_code, response.text)
         
-        time.sleep(1 * 6)
+        time.sleep(1 * 60)
 
 except KeyboardInterrupt:
     print("Cleanup")
