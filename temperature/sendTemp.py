@@ -27,15 +27,16 @@ userId = "UTWME81C6"
 count = 0
 
 lastValidMessage = "no record"
-def getTemperatureAndHumidity():
+def getTemperatureAndHumidity(event):
     result = instance.read()
     now = datetime.datetime.now()
     convertedNow = now.strftime("%Y/%m/%d %H:%M")
-
+    print(event)
     if result.is_valid():
         print("Last valid input: " + str(convertedNow))
         print("Temperature: %-3.1f C" % result.temperature)
         print("Humidity: %-3.1f %%" % result.humidity)
+        global lastValidMessage
         lastValidMessage = "{time}\n気温：{temp}度\n湿度：{humid}%".format(time = convertedNow,temp = result.temperature, humid = result.humidity)
         return result, lastValidMessage
     else:
@@ -64,16 +65,17 @@ def anomalyDetectRequest(result, tempAndHumidMessage):
         print(response.status_code, response.text)
 
 def periodicalLogging():
-    result = getTemperatureAndHumidity()
-    if result != None:
-        periodicalRequest(result[1])
+    result = getTemperatureAndHumidity("定時実行")
+    print(lastValidMessage)
+    periodicalRequest(lastValidMessage)
         
 def anormalLogging():
-    result = getTemperatureAndHumidity()
+    result = getTemperatureAndHumidity("")
     if result != None:
         anomalyDetectRequest(result[0], result[1])
             
 schedule.every(1).minutes.do(anormalLogging)
+
 schedule.every().hour.at("00:00").do(periodicalLogging)
 schedule.every().hour.at("30:00").do(periodicalLogging)
 
