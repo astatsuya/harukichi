@@ -27,6 +27,8 @@ userId = "UTWME81C6"
 count = 0
 
 lastValidMessage = "no record"
+lastPostTime = None
+
 def getTemperatureAndHumidity(event):
     result = instance.read()
     now = datetime.datetime.now()
@@ -61,8 +63,23 @@ def anomalyDetectRequest(result, tempAndHumidMessage):
         payload = {"text": "<@{0}> はるきちのおうちが湿気てる！！飼い主が不快な思いをしているかもしれません。\n\n{1}".format(userId, tempAndHumidMessage)}
     
     if "payload" in locals():
+
+        #def elapsedTimeFromLastPost():
+        now = datetime.datetime.now()
+        global lastPostTime
+        
+        if lastPostTime != None:
+            elapsedTime = now - lastPostTime
+            print(elapsedTime)
+
+            if elapsedTime < datetime.timedelta(minutes=15):
+                return
+    
         response = requests.post(url, json=payload)
         print(response.status_code, response.text)
+        
+        # 連続投稿を避けるために最後のpostを記録する
+        lastPostTime = datetime.datetime.now()
 
 def periodicalLogging():
     result = getTemperatureAndHumidity("定時実行")
